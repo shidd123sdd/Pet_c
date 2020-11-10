@@ -2,7 +2,16 @@
   <div id="sideNav">
     <a-layout-sider width="200" style="background: #fff" :trigger="null">
       <a-menu style="width: 200px">
-        <a-menu-item v-for="item in navList" :key="item.id">
+        <a-menu-item
+          v-for="item in navList"
+          :key="item.id"
+          @click="
+            () =>
+              $router.push({
+                path: item.navPath
+              })
+          "
+        >
           <a-icon type="calendar" />
           {{ item.navName }}
         </a-menu-item>
