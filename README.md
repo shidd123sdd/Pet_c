@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # pet_c
 
 ## Project setup
@@ -27,3 +28,7 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+=======
+# Pet_c
+宠物店收银系统
+>>>>>>> petc/master
