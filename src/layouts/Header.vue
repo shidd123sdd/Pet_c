@@ -3,7 +3,7 @@
     <a-layout id="components-layout-demo-top-side-2">
       <a-layout-header class="header">
         <div class="logo"><span>这有家宠物店</span></div>
-        <a-menu
+        <!-- <a-menu
           theme="dark"
           mode="horizontal"
           :default-selected-keys="['2']"
@@ -18,7 +18,7 @@
           <a-menu-item key="3">
             nav 3
           </a-menu-item>
-        </a-menu>
+        </a-menu> -->
       </a-layout-header>
     </a-layout>
   </div>
