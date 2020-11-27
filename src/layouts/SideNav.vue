@@ -26,6 +26,9 @@ export default {
     this.$store.dispatch({
       type: "nav/initNav"
     });
+    this.$store.dispatch({
+      type: "petType/getPetTypeInfo"
+    });
   },
   watch: {
     "$store.state.nav.navList"() {

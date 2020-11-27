@@ -1,130 +1,99 @@
 <template>
-  <a-table :columns="columns" :data-source="data" bordered>
-    <template
-      v-for="col in ['name', 'age', 'address']"
-      :slot="col"
-      slot-scope="text, record"
-    >
-      <div :key="col">
-        <a-input
-          v-if="record.editable"
-          style="margin: -5px 0"
-          :value="text"
-          @change="e => handleChange(e.target.value, record.key, col)"
-        />
-        <template v-else>
-          {{ text }}
-        </template>
-      </div>
-    </template>
-    <template slot="operation" slot-scope="text, record">
-      <div class="editable-row-operations">
-        <span v-if="record.editable">
-          <a @click="() => save(record.key)">Save</a>
-          <a-popconfirm
-            title="Sure to cancel?"
-            @confirm="() => cancel(record.key)"
-          >
-            <a>Cancel</a>
-          </a-popconfirm>
-        </span>
-        <span v-else>
-          <a :disabled="editingKey !== ''" @click="() => edit(record.key)"
-            >Edit</a
-          >
-        </span>
-      </div>
-    </template>
-  </a-table>
+  <div>
+    <a-table :columns="columns" :data-source="memberList" size="middle">
+      <template slot="action" slot-scope="text, record">
+        <a class="actions" @click="editModal(text, record)">修改</a>
+        <a-popconfirm
+          title="请确认是否删除该记录"
+          ok-text="Yes"
+          cancel-text="No"
+          @confirm="confirm(text, record)"
+        >
+          <a class="actions" v-show="$route.path == '/foster'">删除</a>
+        </a-popconfirm>
+        <a
+          class="actions"
+          v-show="$route.path == '/foster'"
+          @click="accountHandle(text, record)"
+          >结算</a
+        >
+      </template>
+    </a-table>
+    <FosterAccountModal
+      :visable="visable"
+      @closeModal="closeModal"
+      :record="record"
+    />
+  </div>
 </template>
 <script>
-const columns = [
-  {
-    title: "name",
-    dataIndex: "name",
-    width: "25%",
-    scopedSlots: { customRender: "name" }
-  },
-  {
-    title: "age",
-    dataIndex: "age",
-    width: "15%",
-    scopedSlots: { customRender: "age" }
-  },
-  {
-    title: "address",
-    dataIndex: "address",
-    width: "40%",
-    scopedSlots: { customRender: "address" }
-  },
-  {
-    title: "operation",
-    dataIndex: "operation",
-    scopedSlots: { customRender: "operation" }
-  }
-];
-
-const data = [];
-for (let i = 0; i < 100; i++) {
-  data.push({
-    key: i.toString(),
-    name: `Edrward ${i}`,
-    age: 32,
-    address: `London Park no. ${i}`
-  });
-}
+import FosterAccountModal from "./FosterAccountModal";
 export default {
+  props: {
+    memberList: {
+      type: Array
+    },
+    showEdit: {
+      type: Boolean,
+      default: true
+    }
+  },
+  watch: {
+    "$store.state.columnMeta.columns"() {
+      const labelColumn = this.$store.state.columnMeta.columns;
+      this.columnList = labelColumn;
+    }
+  },
+  computed: {
+    columns() {
+      let column = this.columnList;
+      if (this.showEdit) {
+        let options = {
+          title: "操作",
+          dataIndex: "",
+          width: "20%",
+          align: "center",
+          scopedSlots: { customRender: "action" }
+        };
+        column.push(options);
+      }
+      return column;
+    }
+  },
+  components: {
+    FosterAccountModal
+  },
   data() {
-    this.cacheData = data.map(item => ({ ...item }));
     return {
-      data,
-      columns,
-      editingKey: ""
+      columnList: [],
+      visable: false,
+      record: null
     };
   },
   methods: {
-    handleChange(value, key, column) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
-      if (target) {
-        target[column] = value;
-        this.data = newData;
-      }
+    confirm(rext, record) {
+      this.$store.dispatch({
+        type: "foster/deleteFoster",
+        id: record.id
+      });
     },
-    edit(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
-      this.editingKey = key;
-      if (target) {
-        target.editable = true;
-        this.data = newData;
-      }
+    closeModal() {
+      this.visable = !this.visable;
     },
-    save(key) {
-      const newData = [...this.data];
-      const newCacheData = [...this.cacheData];
-      const target = newData.filter(item => key === item.key)[0];
-      const targetCache = newCacheData.filter(item => key === item.key)[0];
-      if (target && targetCache) {
-        delete target.editable;
-        this.data = newData;
-        Object.assign(targetCache, target);
-        this.cacheData = newCacheData;
-      }
-      this.editingKey = "";
+    editModal(text, record) {
+      this.$emit("closeModal");
+      this.$emit("changeUpdate");
+      this.$store.dispatch({
+        type: "member/editMember",
+        editRecord: record
+      });
     },
-    cancel(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
-      this.editingKey = "";
-      if (target) {
-        Object.assign(
-          target,
-          this.cacheData.filter(item => key === item.key)[0]
-        );
-        delete target.editable;
-        this.data = newData;
-      }
+    rechange(text, record) {
+      console.log(text, record);
+    },
+    accountHandle(text, record) {
+      this.visable = true;
+      this.record = record;
     }
   }
 };
@@ -132,5 +101,9 @@ export default {
 <style scoped>
 .editable-row-operations a {
   margin-right: 8px;
+}
+
+.actions {
+  margin: auto 10px;
 }
 </style>
