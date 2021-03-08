@@ -1,4 +1,5 @@
 module.exports = {
+  publicPath: "/petsys/",
   css: {
     loaderOptions: {
       less: {

@@ -1,5 +1,6 @@
 import request from "../../utils/request";
-
+// const baseUrl = "http://39.100.106.43:9000/pet";
+const baseUrl = "";
 const state = {
   productsInfo: [],
   productsTypeOptions: [],
@@ -8,20 +9,18 @@ const state = {
   paywayOptions: [],
   objectList: []
 };
-// const url = "http://localhost:8082";
 
-// const url = "http://39.100.106.43:9000";
 const actions = {
   async getProductsInfo({ commit }) {
     const res = await request({
-      url: "/api/products/getProductsInfo",
+      url: baseUrl + "/api/products/getProductsInfo",
       method: "get"
     });
     commit("setProductsInfo", res.data);
   },
   async addPurchase({ commit }, { purchaseInfo }) {
     const res = await request({
-      url: "/api/products/addPurchase",
+      url: baseUrl + "/api/products/addPurchase",
       method: "post",
       data: purchaseInfo
     });
@@ -36,9 +35,11 @@ const actions = {
       url = "/api/products/productList";
     } else if (key == "2") {
       url = "/api/products/purchaseList";
+    } else {
+      url = "/api/products/sellProductsList";
     }
     const res = await request({
-      url: url,
+      url: baseUrl + url,
       method: "get"
     });
     commit("setObject", res.data);

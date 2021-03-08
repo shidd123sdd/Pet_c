@@ -18,9 +18,15 @@ import {
   InputNumber,
   DatePicker,
   Radio,
-  Popconfirm
+  Popconfirm,
+  Card,
+  Dropdown,
+  Result,
+  message
 } from "ant-design-vue";
 Vue.use(Layout);
+Vue.use(Result);
+Vue.use(message);
 Vue.use(Menu);
 Vue.use(Icon);
 Vue.use(Breadcrumb);
@@ -36,8 +42,16 @@ Vue.use(InputNumber);
 Vue.use(DatePicker);
 Vue.use(Radio);
 Vue.use(Popconfirm);
+Vue.use(Card);
+Vue.use(Dropdown);
 Vue.config.productionTip = false;
 
+Vue.prototype.$message = message;
+message.config({
+  duration: 2, // 持续时间
+  top: `100px`, // 到页面顶部距离
+  maxCount: 3 // 最大显示数, 超过限制时，最早的消息会被自动关闭
+});
 new Vue({
   router,
   store,

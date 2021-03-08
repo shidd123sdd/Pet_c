@@ -1,5 +1,6 @@
 import request from "../../utils/request";
-
+// const baseUrl = "http://39.100.106.43:9000/pet";
+const baseUrl = "";
 const state = {
   afternoon: [],
   morning: [],
@@ -11,24 +12,40 @@ const state = {
 const actions = {
   async getForwardList({ commit }, { forwardDate }) {
     const res = await request({
-      url: "/api/forward/getForwardList?forwardDate=" + forwardDate,
+      url: baseUrl + "/api/forward/getForwardList?forwardDate=" + forwardDate,
       method: "get"
     });
+
     commit("setForwardList", res.data);
   },
   async initItems({ commit }) {
     const res = await request({
-      url: "/api/forward/initItems",
+      url: baseUrl + "/api/forward/initItems",
       method: "get"
     });
     commit("setInitItems", res.data);
   },
-  async addForward({ commit }, { forwardInfo, currDate }) {
-    let d = new Date(currDate);
-    let nowStr = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
-    const forwardDate = nowStr;
+  async forwardAccount({ commit }, { consumeInfo }) {
+    const forwardDate = consumeInfo.forwardDate;
     const res = await request({
-      url: "/api/forward/addForward",
+      url: baseUrl + "/api/forward/forwardAccount",
+      method: "post",
+      data: consumeInfo
+    });
+    if (res.state === 1) {
+      actions.getForwardList({ commit }, { forwardDate });
+    }
+  },
+  async deleteRecord({ commit }, { id, forwardDate }) {
+    await request({
+      url: baseUrl + "/api/forward/deleteRecord?id=" + id,
+      method: "get"
+    });
+    actions.getForwardList({ commit }, { forwardDate });
+  },
+  async addForward({ commit }, { forwardInfo, forwardDate }) {
+    const res = await request({
+      url: baseUrl + "/api/forward/addForward",
       method: "post",
       data: forwardInfo
     });
@@ -36,12 +53,12 @@ const actions = {
       actions.getForwardList({ commit }, { forwardDate });
     }
   },
-  async updateForward({ commit }, { forwardInfo, currDate }) {
-    let d = new Date(currDate);
-    let nowStr = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
-    const forwardDate = nowStr;
+  async updateForward({ commit }, { forwardInfo, forwardDate }) {
+    // let d = new Date(currDate);
+    // let nowStr = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+    // const forwardDate = nowStr;
     const res = await request({
-      url: "/api/forward/updateForward",
+      url: baseUrl + "/api/forward/updateForward",
       method: "post",
       data: forwardInfo
     });

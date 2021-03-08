@@ -1,15 +1,14 @@
 import request from "../../utils/request";
-
+// const baseUrl = "http://39.100.106.43:9000/pet";
+const baseUrl = "";
 const state = {
   petTypeList: []
 };
-// const url = "http://localhost:8082";
 
-// const url = "http://39.100.106.43:9000";
 const actions = {
   async getPetTypeInfo({ commit }) {
     const res = await request({
-      url: "/api/petType/getPetTypeInfo",
+      url: baseUrl + "/api/petType/getPetTypeInfo",
       method: "get"
     });
     commit("setPetTypeList", res.data);

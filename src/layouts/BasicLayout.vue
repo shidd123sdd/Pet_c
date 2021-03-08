@@ -4,13 +4,12 @@
       <Header />
       <a-layout>
         <SideNav />
-        <a-layout style="padding: 0 24px 24px">
+        <a-layout style="padding: 0 24px; height: 740px">
           <a-layout-content
             :style="{
               background: '#fff',
               padding: '24px',
-              margin: 0,
-              minHeight: '280px'
+              margin: 0
             }"
           >
             <router-view />

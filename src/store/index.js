@@ -7,6 +7,7 @@ import petType from "./modules/petType";
 import products from "./modules/products";
 import forward from "./modules/forward";
 import foster from "./modules/foster";
+import account from "./modules/account";
 
 Vue.use(Vuex);
 
@@ -14,5 +15,14 @@ export default new Vuex.Store({
   state: {},
   mutations: {},
   actions: {},
-  modules: { nav, member, columnMeta, petType, products, forward, foster }
+  modules: {
+    nav,
+    member,
+    columnMeta,
+    petType,
+    products,
+    forward,
+    foster,
+    account
+  }
 });

@@ -80,6 +80,9 @@ export default {
       for (let i = 0; i < list.length; i++) {
         const item = list[i];
         for (let key in item) {
+          if (!item[key]) {
+            continue;
+          }
           let str = item[key].toString();
           if (str.indexOf(value) != -1) {
             res.push(item);
@@ -101,6 +104,9 @@ export default {
         this.showEdit = true;
       } else if (key == "2") {
         id = "purchase_info";
+        this.showEdit = false;
+      } else {
+        id = "sell_products_info";
         this.showEdit = false;
       }
 

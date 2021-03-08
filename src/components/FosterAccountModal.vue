@@ -155,7 +155,28 @@ export default {
       this.$emit("closeModal");
     },
     moment,
-    handleSubmit() {},
+    handleSubmit() {
+      const { form } = this;
+      form.validateFields((err, values) => {
+        values["money"] = this.totalPrice;
+        values["itemType"] = 1;
+        values["itemId"] = 3;
+        values["fosterId"] = this.record.id;
+        if (this.record.isMember == 1) {
+          values["memberId"] = this.record.memberId;
+          values["petId"] = this.record.petId;
+        } else {
+          values["memberId"] = null;
+          values["petId"] = null;
+        }
+        this.$store.dispatch({
+          type: "foster/fosterAccount",
+          consumeInfo: values
+        });
+        this.form.resetFields();
+        this.$emit("closeModal");
+      });
+    },
     changeTotalDate(value) {
       this.totalDate = value;
       let res = value * this.discount * this.price;

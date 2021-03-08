@@ -1,5 +1,6 @@
 import request from "../../utils/request";
-
+// const baseUrl = "http://39.100.106.43:9000/pet";
+const baseUrl = "";
 const state = {
   memberList: [],
   autoId: "",
@@ -9,14 +10,23 @@ const state = {
 const actions = {
   async getMemberList({ commit }) {
     const res = await request({
-      url: "/api/member/getMemberList",
+      url: baseUrl + "/api/member/getMemberList",
       method: "get"
     });
     commit("setMemberList", res.data);
   },
+  async recharge({ commit }, { rechargeInfo }) {
+    const res = await request({
+      url: baseUrl + "/api/member/recharge",
+      method: "post",
+      data: rechargeInfo
+    });
+    actions.getMemberList({ commit });
+    return res;
+  },
   async getAutoId({ commit }) {
     const res = await request({
-      url: "/api/member/getAutoId",
+      url: baseUrl + "/api/member/getAutoId",
       method: "get"
     });
     commit("setAutoId", res.data);
@@ -27,7 +37,7 @@ const actions = {
   async addMember({ commit }, { memberInfoVo, petList }) {
     const memberInfo = { memberInfoVo, petList };
     const res = await request({
-      url: "/api/member/addMember",
+      url: baseUrl + "/api/member/addMember",
       method: "post",
       data: memberInfo
     });
@@ -38,7 +48,7 @@ const actions = {
   async updateMember({ commit }, { memberInfoVo, petList }) {
     const memberInfo = { memberInfoVo, petList };
     const res = await request({
-      url: "/api/member/updateMember",
+      url: baseUrl + "/api/member/updateMember",
       method: "post",
       data: memberInfo
     });

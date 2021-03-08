@@ -1,6 +1,6 @@
 import router from "../../router";
 import request from "../../utils/request";
-const url = "http://localhost:9000";
+const url = "http://localhost:9000/pet/";
 // const url = "http://39.100.106.43:9000";
 const state = {
   user: {

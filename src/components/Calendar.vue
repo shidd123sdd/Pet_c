@@ -2,7 +2,7 @@
   <div class="box">
     <VueCalendarWeek v-model="value" @click="getDate" />
     <div class="forwardInfo">
-      <div class="innerBox">
+      <!-- <div class="innerBox">
         <div class="title">上午</div>
         <div class="list" v-for="(item, index) in morning" :key="index">
           <div class="time" @click="updateForward(item)">
@@ -14,8 +14,8 @@
           <div class="service">{{ item.serviceName }}</div>
           <div class="clearfix"></div>
         </div>
-      </div>
-      <div class="innerBox">
+      </div> -->
+      <!-- <div class="innerBox">
         <div class="title">下午</div>
         <div class="list" v-for="(item, index) in afternoon" :key="index">
           <div class="time" @click="updateForward(item)">
@@ -27,7 +27,14 @@
           <div class="service">{{ item.serviceName }}</div>
           <div class="clearfix"></div>
         </div>
-      </div>
+      </div> -->
+
+      <FowardTable
+        :afternoon="afternoon"
+        :morning="morning"
+        @updateItem="updateForward"
+        :nowStr="nowStr"
+      />
     </div>
     <div>
       <a-button type="primary" class="btn" @click="changeModal">
@@ -48,8 +55,11 @@
 <script>
 import VueCalendarWeek from "vue-calendar-week";
 import ForwardModal from "./ForwardModal";
+import FowardTable from "./FowardTable";
+import moment from "moment";
 export default {
   data() {
+    const nowStr = moment().format("YYYY-MM-DD");
     return {
       value: new Date(),
       morning: [],
@@ -57,26 +67,44 @@ export default {
       visable: false,
       isUpdate: false,
       forwardInfo: {},
-      nowStr: ""
+      nowStr: nowStr
     };
   },
+
   components: {
     VueCalendarWeek,
-    ForwardModal
+    ForwardModal,
+    FowardTable
   },
   watch: {
     "$store.state.forward.afternoon"() {
-      this.afternoon = this.$store.state.forward.afternoon;
+      let afternoon = this.$store.state.forward.afternoon;
+      for (let i = 0; i < afternoon.length; i++) {
+        afternoon[i] = {
+          ...afternoon[i],
+          key: afternoon[i].id,
+          id: afternoon[i].id
+        };
+      }
+      this.afternoon = afternoon;
     },
     "$store.state.forward.morning"() {
-      this.morning = this.$store.state.forward.morning;
+      let morning = this.$store.state.forward.morning;
+      for (let i = 0; i < morning.length; i++) {
+        morning[i] = {
+          ...morning[i],
+          key: morning[i].id,
+          id: morning[i].id
+        };
+      }
+      this.morning = morning;
     }
   },
   methods: {
+    moment,
     getDate(value) {
-      let d = new Date(value);
-      let nowStr =
-        d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+      const nowStr = moment(value).format("YYYY-MM-DD");
+      console.log(nowStr);
       this.nowStr = nowStr;
       this.$store.dispatch({
         type: "forward/getForwardList",

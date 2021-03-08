@@ -17,6 +17,12 @@
           @click="accountHandle(text, record)"
           >结算</a
         >
+        <a
+          class="actions"
+          v-show="$route.path == '/member'"
+          @click="rechargeMember(text, record)"
+          >充值</a
+        >
       </template>
     </a-table>
     <FosterAccountModal
@@ -24,11 +30,30 @@
       @closeModal="closeModal"
       :record="record"
     />
+    <RechargeModal
+      :rechargeVisible="rechargeVisible"
+      :payTypeOptions="payTypeOptions"
+      @closeRecharge="closeRecharge"
+      :memberInfo="memberInfo"
+      @showSuccessModal="showSuccessModal"
+    />
+    <SuccessMsgModal
+      :successMsgVisible="successMsgVisible"
+      :successTitle="successTitle"
+      @cancelSuccessModal="cancelSuccessModal"
+    />
   </div>
 </template>
 <script>
 import FosterAccountModal from "./FosterAccountModal";
+import RechargeModal from "./RechargeModal";
+import SuccessMsgModal from "./SuccessMsgModal";
 export default {
+  beforeCreate() {
+    this.$store.dispatch({
+      type: "foster/getPayType"
+    });
+  },
   props: {
     memberList: {
       type: Array
@@ -42,6 +67,9 @@ export default {
     "$store.state.columnMeta.columns"() {
       const labelColumn = this.$store.state.columnMeta.columns;
       this.columnList = labelColumn;
+    },
+    "$store.state.foster.payTypeOptions"() {
+      this.payTypeOptions = this.$store.state.foster.payTypeOptions;
     }
   },
   computed: {
@@ -61,13 +89,20 @@ export default {
     }
   },
   components: {
-    FosterAccountModal
+    FosterAccountModal,
+    RechargeModal,
+    SuccessMsgModal
   },
   data() {
     return {
       columnList: [],
       visable: false,
-      record: null
+      record: null,
+      payTypeOptions: [],
+      rechargeVisible: false,
+      memberInfo: null,
+      successMsgVisible: false,
+      successTitle: ""
     };
   },
   methods: {
@@ -94,6 +129,21 @@ export default {
     accountHandle(text, record) {
       this.visable = true;
       this.record = record;
+    },
+    closeRecharge() {
+      this.rechargeVisible = !this.rechargeVisible;
+    },
+    showSuccessModal(msg) {
+      this.successTitle = msg;
+      this.successMsgVisible = true;
+    },
+    cancelSuccessModal() {
+      this.successMsgVisible = !this.successMsgVisible;
+    },
+    rechargeMember(text, record) {
+      console.log(record);
+      this.memberInfo = record;
+      this.rechargeVisible = true;
     }
   }
 };
